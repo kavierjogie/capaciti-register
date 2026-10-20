@@ -6,8 +6,8 @@
 update public.profiles set role = 'mentor', candidate_identifier = null
  where email = 'tech.champion@example.org';
 
--- 2) Candidates: normally invited by a Tech Champion from the app (Candidates → Invite candidate),
---    which assigns them automatically. To assign or move one manually:
+-- 2) Candidates: CAPACITI creates the user (Dashboard → Authentication → Users → "Invite user"),
+--    then assigns them to a Tech Champion (also used to move one):
 update public.profiles
    set mentor_id = (select id from public.profiles where email = 'tech.champion@example.org' and role = 'mentor'),
        candidate_identifier = 'CAP-2026-0001',

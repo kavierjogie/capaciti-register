@@ -34,9 +34,8 @@ The browser only ever holds the **publishable** key. Every rule is enforced in P
 | **`SECURITY DEFINER` RPCs** | `check_in`, `check_out`, `submit_wfh_request`, `decide_wfh_request` use `auth.uid()` (never a client-supplied ID) and `now()` (never the browser clock). |
 | **Atomic decisions** | `decide_wfh_request` updates `WHERE status = 'pending' AND is_my_candidate(...)` — a second decision can't overwrite the first, and only the assigned Tech Champion can decide. Rejection requires a comment (also a CHECK constraint). |
 | **Constraints** | One attendance row per candidate per day; check-out after check-in; one pending/approved WFH request per date; status/decision consistency. |
-| **Audit trail** | WFH submissions and decisions, invitations, and any change to role/assignment/status/cohort/ID (via trigger, whoever makes it). Read-only to users. |
+| **Audit trail** | WFH submissions and decisions, and any change to role/assignment/status/cohort/ID (via trigger, whoever makes it). Read-only to users. |
 | **Signup** | New auth users always get a `candidate` profile; role in signup metadata is ignored. Public signup should be **disabled** (see setup). |
-| **Secret key** | Used only in `api/invite-candidate.js`, which first verifies the caller's JWT and that they're an active Tech Champion. Never `VITE_`-prefixed. |
 
 Adding an **admin** role later: `alter type app_role add value 'admin'` and extend `current_role_is`/`is_my_candidate`
 plus the select policies — no table changes needed.
@@ -60,9 +59,9 @@ Dashboard → Authentication → Users → **Invite user** with their email, the
 `supabase/provisioning.sql` to promote them to `mentor`. They set their password from the invite email.
 
 ### 3. Candidates
-Tech Champions invite candidates in the app (**Candidates → Invite candidate**). The candidate is created with role
-`candidate`, assigned to that Tech Champion, and emailed a link to set a password. Manual assignment, moving a
-candidate, or deactivating an account: see `supabase/provisioning.sql`.
+CAPACITI adds candidates (Dashboard → Authentication → Users → **Invite user**) and assigns them to a Tech Champion
+with the second snippet in `supabase/provisioning.sql`. Tech Champions can't add candidates. Moving a candidate or
+deactivating an account: see the same file.
 
 ### 4. Environment variables
 Copy `.env.example` to `.env.local`:
@@ -71,8 +70,6 @@ Copy `.env.example` to `.env.local`:
 |---|---|---|
 | `VITE_SUPABASE_URL` | browser | Project URL |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | browser | `sb_publishable_…` (legacy anon key also works as `VITE_SUPABASE_ANON_KEY`) |
-| `SUPABASE_URL` | server only | Project URL |
-| `SUPABASE_SECRET_KEY` | server only | `sb_secret_…` (or legacy `service_role` as `SUPABASE_SERVICE_ROLE_KEY`) |
 
 The app shows a “Supabase isn't configured” screen if the browser variables are missing.
 
@@ -81,7 +78,6 @@ The app shows a “Supabase isn't configured” screen if the browser variables 
 npm install
 npm run dev          # http://localhost:5173
 ```
-`/api/invite-candidate` is a Vercel function; to use invitations locally run `npx vercel dev` instead of `npm run dev`.
 
 ---
 
@@ -120,10 +116,10 @@ walk through *Manual acceptance checks* below with one Tech Champion and two can
 
 1. Push to GitHub: `git add . && git commit -m "CAPACITI register" && git branch -M main && git remote add origin <repo-url> && git push -u origin main`.
 2. Vercel → **Add New → Project** → import the repo. Framework preset **Vite** is detected (`vercel.json` also pins build command `npm run build` and output `dist`).
-3. **Environment Variables** (Production + Preview): the four variables from step 4 above.
+3. **Environment Variables** (Production + Preview): the two variables from step 4 above.
 4. Deploy. `vercel.json` rewrites every non-`/api` path to `index.html`, so refreshing deep links works.
 5. Add the production URL to Supabase **Site URL** and **Redirect URLs** (`…/reset-password`).
-6. Smoke-test: sign in, password reset email, invite a candidate, check in/out, submit/decide a WFH request, export CSV.
+6. Smoke-test: sign in, password reset email, check in/out, submit/decide a WFH request, export CSV.
 
 ---
 
@@ -149,7 +145,6 @@ walk through *Manual acceptance checks* below with one Tech Champion and two can
 ## Project structure
 
 ```
-api/invite-candidate.js        Vercel function (secret key, mentor-only)
 supabase/migrations/           schema, RLS, grants, RPCs, views
 supabase/tests/                PGlite RLS/RPC tests + auth stub
 supabase/provisioning.sql      admin snippets

@@ -93,7 +93,7 @@ export default function MentorDashboard() {
               <CardHeader id="today-reg" title="Today's register"
                 subtitle={data ? `${data.notIn} not checked in · ${data.open} not checked out yet` : 'Loading…'} actionTo={`/mentor/attendance?from=${today}&to=${today}`} />
               {!data ? <SkeletonRows /> : data.candidates.length === 0 ? (
-                <EmptyState icon={Users} title="No candidates assigned">Invite candidates from the Candidates page.</EmptyState>
+                <EmptyState icon={Users} title="No candidates assigned">CAPACITI will assign candidates to you.</EmptyState>
               ) : (
                 <ul className="max-h-[420px] overflow-y-auto px-5 pb-3">
                   {data.candidates.map((c) => {

@@ -89,7 +89,7 @@ export function Login() {
         <PasswordInput autoComplete="current-password" value={form.password} onChange={set('password')} error={errors.password} />
         <Link to="/forgot-password" className="-mt-2 self-end text-sm font-medium text-purple hover:underline">Forgot password?</Link>
         <Button type="submit" icon={LogIn} loading={busy}>Sign in</Button>
-        <p className="text-center text-xs text-muted">No account? Accounts are created by invitation from your Tech Champion.</p>
+        <p className="text-center text-xs text-muted">No account? Your account will be created by CAPACITI.</p>
       </form>
     </AuthShell>
   )
