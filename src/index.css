@@ -1,0 +1,51 @@
+@import 'tailwindcss';
+
+/* Tokens from the Figma file "Tech-Geeks_Online-Register-WFH_Capaciti" */
+@theme {
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+
+  --color-purple: #6115d0;
+  --color-purple-hover: #4f0fae;
+  --color-purple-30: #d0b9f1;
+  --color-purple-tint: #f1eafb;
+  --color-kadet: #1d2951;
+  --color-kadet-80: #4a5474;
+  --color-kadet-50: #8e94a8;
+  --color-kadet-tint: #e9ebf1;
+  --color-salmon: #f25251;
+  --color-pink: #f1d1d1;
+  --color-pink-50: #f8e8e8;
+
+  --color-ink: #1d2951;
+  --color-muted: #5b6380;
+  --color-placeholder: #6b7290;
+  --color-bg: #f7f7fa;
+  --color-surface-muted: #f0f1f5;
+  --color-line: #e4e6ee;
+  --color-line-strong: #c9cdda;
+
+  --color-success: #067647;
+  --color-success-surface: #e7f6ee;
+  --color-success-border: #a6e0c1;
+  --color-warning: #8a5a00;
+  --color-warning-accent: #e0a100;
+  --color-warning-surface: #fff4dc;
+  --color-warning-border: #f3d58a;
+  --color-error: #b42318;
+  --color-error-surface: #fdecec;
+  --color-error-border: #f5b8b3;
+  --color-late: #9c2b2a;
+
+  --shadow-card: 0 4px 12px rgba(29, 41, 81, 0.05), 0 1px 2px rgba(29, 41, 81, 0.05);
+  --shadow-pop: 0 12px 28px rgba(29, 41, 81, 0.14);
+  --shadow-modal: 0 24px 56px rgba(29, 41, 81, 0.24);
+}
+
+@layer base {
+  html { @apply bg-bg text-ink antialiased; }
+  body { @apply min-h-dvh font-sans text-sm; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-purple; }
+  input[type='date']::-webkit-calendar-picker-indicator { cursor: pointer; }
+}
+
+@utility label-caps { @apply text-[11px] font-semibold uppercase leading-4 tracking-[0.08em] text-muted; }
